@@ -27,7 +27,7 @@ describe('documents', () => {
     const doc = {hello: 'world'}
     nock('http://localhost')
       .get(/documents/)
-      .query({uri: '/fetched-doc.json'})
+      .query({uri: docUri})
       .reply(200, {
         content: doc
       })
@@ -40,14 +40,33 @@ describe('documents', () => {
       ).toBe(true)
       unsubscribe()
     })
-    store.dispatch(actions.fetchDoc('/fetched-doc.json')).then(() => {
+    store.dispatch(actions.fetchDoc(docUri)).then(() => {
       expect(
         selectors.isDocumentFetchPending(store.getState(), docUri)
       ).toBe(false)
       expect(selectors.documentByUri(
         store.getState(),
-        '/fetched-doc.json'
+        docUri
       )).toEqual(doc)
+      done()
+    })
+  })
+
+  it('handles failure when fetching a document', (done) => {
+    const failedDocUri = '/failed-doc.json'
+    nock('http://localhost').get(/documents/).reply(500)
+    store.dispatch(actions.fetchDoc(failedDocUri)).then(() => {
+      expect(
+        selectors.isDocumentFetchPending(store.getState(), failedDocUri)
+      ).toBe(false)
+      expect(selectors.documentByUri(
+        store.getState(),
+        failedDocUri
+      )).toEqual(undefined)
+      expect(selectors.errorByUri(
+        store.getState(),
+        failedDocUri
+      )).toContain('Error')
       done()
     })
   })
