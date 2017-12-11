@@ -1,6 +1,6 @@
 {
   "name": "ml-documents-redux",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Redux module to model and retrieve MarkLogic documents",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/pmcelwee/ml-documents-redux.git",

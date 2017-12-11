@@ -1443,6 +1443,11 @@ var documentReducer = function documentReducer() {
         content: action.payload.response.content,
         pending: false
       });
+    case types.FETCH_DOC_FAILURE:
+      return _extends({}, state, {
+        pending: false,
+        error: action.payload.error
+      });
     default:
       return state;
   }
@@ -1467,6 +1472,9 @@ var selectors = exports.selectors = {
   },
   documentByUri: function documentByUri(state, docUri) {
     return state[docUri] && state[docUri].content;
+  },
+  errorByUri: function errorByUri(state, docUri) {
+    return state[docUri] && state[docUri].error;
   }
 };
 
