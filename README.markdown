@@ -11,15 +11,24 @@ This is a Redux implementation for interaction with MarkLogic documents in the b
 The provided selectors only know about their slice of state, so your consuming code needs to wrap them to provide their particular slice of state. For example:
 
 ```javascript
-import { documentActions, documentSelectors } from 'ml-documents-redux';
+import {
+  actions as documentActions,
+  selectors as documentSelectors
+} from 'ml-documents-redux';
 
-const wrappedDocumentSelectors = Object.keys(documentSelectors).reduce(
-  (newSelectors, name) => {
-    newSelectors[name] = state => documentSelectors[name](state.documents)
-    return newSelectors;
-  },
-  {}
-);
+const bindSelector = (selector, mountPoint) => {
+  return (state, ...args) => {
+    return selector(state[mountPoint], ...args)
+  }
+}
+const bindSelectors = (selectors, mountPoint) => {
+  return Object.keys(selectors).reduce((bound, key) => {
+    bound[key] = bindSelector(selectors[key], mountPoint)
+    return bound
+  }, {})
+}
+
+const boundDocumentSelectors = bindSelectors(documentSelectors, 'documents');
 ```
 
 ## 'Ducks' architecture
