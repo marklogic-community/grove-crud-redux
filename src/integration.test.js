@@ -44,10 +44,10 @@ describe('documents', () => {
       expect(
         selectors.isDocumentFetchPending(store.getState(), docUri)
       ).toBe(false)
-      expect(selectors.documentByUri(
-        store.getState(),
-        docUri
-      )).toEqual(doc)
+      expect(selectors.documentByUri(store.getState(), docUri)).toEqual(doc)
+      expect(selectors.contentTypeByUri(store.getState(), docUri)).toEqual(
+        'application/json'
+      )
       done()
     })
   })
@@ -59,6 +59,8 @@ describe('documents', () => {
       expect(
         selectors.isDocumentFetchPending(store.getState(), failedDocUri)
       ).toBe(false)
+      // TODO: should 'documentByUri' return everything and contentByUri be
+      // the content selector?
       expect(selectors.documentByUri(
         store.getState(),
         failedDocUri

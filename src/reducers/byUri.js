@@ -12,6 +12,7 @@ const documentReducer = (state = {}, action) => {
       return {
         ...state,
         content: action.payload.response.content,
+        contentType: action.payload.response.contentType,
         pending: false
       }
     case types.FETCH_DOC_FAILURE:
@@ -42,6 +43,7 @@ export const selectors = {
   isDocumentFetchPending: (state, docUri) => (
     !!(state[docUri] && state[docUri].pending)
   ),
-  documentByUri: (state, docUri) => state[docUri] && state[docUri].content,
-  errorByUri: (state, docUri) => state[docUri] && state[docUri].error
+  documentByUri: (state, uri) => state[uri] && state[uri].content,
+  contentTypeByUri: (state, uri) => state[uri] && state[uri].contentType,
+  errorByUri: (state, uri) => state[uri] && state[uri].error
 }
