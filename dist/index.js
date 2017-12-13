@@ -1441,6 +1441,7 @@ var documentReducer = function documentReducer() {
     case types.FETCH_DOC_SUCCESS:
       return _extends({}, state, {
         content: action.payload.response.content,
+        contentType: action.payload.response.contentType,
         pending: false
       });
     case types.FETCH_DOC_FAILURE:
@@ -1470,11 +1471,14 @@ var selectors = exports.selectors = {
   isDocumentFetchPending: function isDocumentFetchPending(state, docUri) {
     return !!(state[docUri] && state[docUri].pending);
   },
-  documentByUri: function documentByUri(state, docUri) {
-    return state[docUri] && state[docUri].content;
+  documentByUri: function documentByUri(state, uri) {
+    return state[uri] && state[uri].content;
   },
-  errorByUri: function errorByUri(state, docUri) {
-    return state[docUri] && state[docUri].error;
+  contentTypeByUri: function contentTypeByUri(state, uri) {
+    return state[uri] && state[uri].contentType;
+  },
+  errorByUri: function errorByUri(state, uri) {
+    return state[uri] && state[uri].error;
   }
 };
 
@@ -1498,23 +1502,39 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 __webpack_require__(28); /* global fetch, URL */
 // TODO: extract documents to one level up (ml-documents-redux)
+
+
+var defaultAPI = {
+  getDoc: function getDoc(uri) {
+    var contentType = void 0;
+    return fetch(new URL('/api/documents?uri=' + uri, document.baseURI).toString()).then(function (response) {
+      if (!response.ok) throw new Error(response.statusText);
+      contentType = response.headers.get('content-type');
+      if (contentType && contentType.indexOf('application/json') !== -1) {
+        return response.json();
+      } else {
+        return response.text();
+      }
+    }).then(function (response) {
+      return {
+        content: response.content,
+        contentType: response.contentType || contentType
+      };
+    });
+  }
+};
+
 var fetchDoc = exports.fetchDoc = function fetchDoc(docUri) {
+  var extraArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  var API = extraArgs.docAPI || defaultAPI;
   return function (dispatch) {
     dispatch({
       type: types.FETCH_DOC_REQUESTED,
       payload: { docUri: docUri }
     });
 
-    // TODO: wrap in API object
-    return fetch(new URL('/api/documents?uri=' + docUri, document.baseURI).toString(), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(function (response) {
-      if (!response.ok) throw new Error(response.statusText);
-      return response.json();
-    }).then(function (response) {
+    return API.getDoc(docUri).then(function (response) {
       return dispatch({
         type: types.FETCH_DOC_SUCCESS,
         payload: {
@@ -1523,7 +1543,8 @@ var fetchDoc = exports.fetchDoc = function fetchDoc(docUri) {
         }
       });
     }, function (error) {
-      return dispatch({
+      console.warn('Error fetching doc: ', error);
+      dispatch({
         type: types.FETCH_DOC_FAILURE,
         payload: {
           error: 'Error fetching document: ' + error.message,
