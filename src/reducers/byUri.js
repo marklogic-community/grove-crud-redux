@@ -1,4 +1,6 @@
 import * as types from '../actionTypes'
+import X2JS from 'x2js'
+let x2js
 
 // TODO: extract, which may make writing the selectors simpler
 const documentReducer = (state = {}, action) => {
@@ -39,11 +41,28 @@ export default (state = {}, action) => {
 }
 
 // SELECTORS
+const xmlToJson = xml => {
+  x2js = x2js || new X2JS()
+  return x2js.xml2js(xml)
+}
+
+const getDocumentByUri = (state, uri) => state[uri] && state[uri].content
+const getContentTypeByUri = (state, uri) => state[uri] && state[uri].contentType
+
 export const selectors = {
   isDocumentFetchPending: (state, docUri) => (
     !!(state[docUri] && state[docUri].pending)
   ),
-  documentByUri: (state, uri) => state[uri] && state[uri].content,
-  contentTypeByUri: (state, uri) => state[uri] && state[uri].contentType,
+  documentByUri: getDocumentByUri,
+  jsonByUri: (state, uri) => {
+    const content = getDocumentByUri(state, uri)
+    if (!content) { return }
+    if (getContentTypeByUri(state, uri).indexOf('application/xml') !== -1) {
+      return xmlToJson(content)
+    } else {
+      return content
+    }
+  },
+  contentTypeByUri: getContentTypeByUri,
   errorByUri: (state, uri) => state[uri] && state[uri].error
 }

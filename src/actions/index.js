@@ -8,7 +8,8 @@ const defaultAPI = {
   getDoc: uri => {
     let contentType
     return fetch(
-      new URL('/api/documents?uri=' + uri, document.baseURI).toString()
+      new URL('/api/documents?uri=' + uri, document.baseURI).toString(),
+      { credentials: 'same-origin' }
     ).then(response => {
       if (!response.ok) throw new Error(response.statusText)
       contentType = response.headers.get('content-type')
@@ -19,7 +20,7 @@ const defaultAPI = {
       }
     }).then(response => {
       return {
-        content: response.content,
+        content: response.content || response,
         contentType: response.contentType || contentType
       }
     })

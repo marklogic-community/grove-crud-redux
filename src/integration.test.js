@@ -8,6 +8,8 @@ import reducer, { selectors } from './'
 import * as actions from './actions'
 
 describe('documents', () => {
+  const docUri = '/fetched-doc.json'
+
   afterEach(nock.cleanAll)
 
   let store
@@ -16,14 +18,12 @@ describe('documents', () => {
   })
 
   it('returns undefined for nonexistent document', () => {
-    expect(selectors.documentByUri(
-      store.getState(),
-      '/no-such-doc.json'
-    )).toBe(undefined)
+    const noDocUri = '/no-such-doc.json'
+    expect(selectors.documentByUri(store.getState(), noDocUri)).toBeUndefined()
+    expect(selectors.jsonByUri(store.getState(), noDocUri)).toBeUndefined()
   })
 
   it('fetches a doc successfully', (done) => {
-    const docUri = '/fetched-doc.json'
     const doc = {hello: 'world'}
     nock('http://localhost')
       .get(/documents/)
@@ -45,6 +45,7 @@ describe('documents', () => {
         selectors.isDocumentFetchPending(store.getState(), docUri)
       ).toBe(false)
       expect(selectors.documentByUri(store.getState(), docUri)).toEqual(doc)
+      expect(selectors.jsonByUri(store.getState(), docUri)).toEqual(doc)
       expect(selectors.contentTypeByUri(store.getState(), docUri)).toEqual(
         'application/json'
       )
@@ -73,6 +74,18 @@ describe('documents', () => {
     })
   })
 
+  it('returns json when XML document is fetched', (done) => {
+    const xml = '<PersonGivenName>Jill</PersonGivenName>'
+    nock('http://localhost').get(/documents/).query({uri: docUri})
+      .reply(200, xml, {'Content-Type': 'application/xml'})
+    store.dispatch(actions.fetchDoc(docUri)).then(() => {
+      expect(selectors.documentByUri(store.getState(), docUri)).toEqual(xml)
+      expect(selectors.jsonByUri(store.getState(), docUri)).toEqual({
+        'PersonGivenName': 'Jill'
+      })
+      done()
+    })
+  })
 //   it('fetches a document that is not in state', () => {
 //     const doc = {hello: 'world'}
 //     nock('http://localhost')
