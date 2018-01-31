@@ -28,7 +28,7 @@ const defaultAPI = {
 }
 
 export const fetchDoc = (docUri, extraArgs = {}) => {
-  const API = extraArgs.docAPI || defaultAPI
+  const API = extraArgs.api || defaultAPI
   return (dispatch) => {
     dispatch({
       type: types.FETCH_DOC_REQUESTED,
