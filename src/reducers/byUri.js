@@ -15,7 +15,8 @@ const documentReducer = (state = {}, action) => {
         ...state,
         content: action.payload.response.content,
         contentType: action.payload.response.contentType,
-        pending: false
+        pending: false,
+        error: undefined
       }
     case types.FETCH_DOC_FAILURE:
       return {

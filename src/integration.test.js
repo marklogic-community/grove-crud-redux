@@ -9,6 +9,7 @@ import * as actions from './actions'
 
 describe('documents', () => {
   const docUri = '/fetched-doc.json'
+  const doc = { hello: 'world' }
 
   afterEach(nock.cleanAll)
 
@@ -24,7 +25,6 @@ describe('documents', () => {
   })
 
   it('fetches a doc successfully', done => {
-    const doc = { hello: 'world' }
     nock('http://localhost')
       .get(/documents/)
       .query({ uri: docUri })
@@ -64,14 +64,43 @@ describe('documents', () => {
       ).toBe(false)
       // TODO: should 'documentByUri' return everything and contentByUri be
       // the content selector?
-      expect(selectors.documentByUri(store.getState(), failedDocUri)).toEqual(
-        undefined
-      )
+      expect(
+        selectors.documentByUri(store.getState(), failedDocUri)
+      ).toBeUndefined()
       expect(selectors.errorByUri(store.getState(), failedDocUri)).toContain(
         'Error'
       )
       done()
     })
+  })
+
+  it('handles success after a failure', done => {
+    const fickleDocUri = '/fickle-doc.json'
+    nock('http://localhost')
+      .get(/documents/)
+      .query({ uri: fickleDocUri })
+      .reply(500)
+    store
+      .dispatch(actions.fetchDoc(fickleDocUri))
+      .then(() => {
+        nock.cleanAll()
+        nock('http://localhost')
+          .get(/documents/)
+          .query({ uri: fickleDocUri })
+          .reply(200, {
+            content: doc
+          })
+        return store.dispatch(actions.fetchDoc(fickleDocUri))
+      })
+      .then(() => {
+        expect(selectors.documentByUri(store.getState(), fickleDocUri)).toEqual(
+          doc
+        )
+        expect(
+          selectors.errorByUri(store.getState(), fickleDocUri)
+        ).toBeUndefined()
+        done()
+      })
   })
 
   it('returns json when XML document is fetched', done => {
