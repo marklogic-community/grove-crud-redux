@@ -33,7 +33,8 @@ export default (state = {}, action) => {
     return {
       ...state,
       [action.payload.docUri]: documentReducer(
-        state[action.payload.docUri], action
+        state[action.payload.docUri],
+        action
       )
     }
   }
@@ -50,13 +51,14 @@ const getDocumentByUri = (state, uri) => state[uri] && state[uri].content
 const getContentTypeByUri = (state, uri) => state[uri] && state[uri].contentType
 
 export const selectors = {
-  isDocumentFetchPending: (state, docUri) => (
-    !!(state[docUri] && state[docUri].pending)
-  ),
+  isDocumentFetchPending: (state, docUri) =>
+    !!(state[docUri] && state[docUri].pending),
   documentByUri: getDocumentByUri,
   jsonByUri: (state, uri) => {
     const content = getDocumentByUri(state, uri)
-    if (!content) { return }
+    if (!content) {
+      return
+    }
     if (getContentTypeByUri(state, uri).indexOf('application/xml') !== -1) {
       return xmlToJson(content)
     } else {

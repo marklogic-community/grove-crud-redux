@@ -1,8 +1,8 @@
 // TODO: extract documents to one level up (ml-documents-redux)
 import { combineReducers } from 'redux'
-import byUri, {selectors as byUriSelectors} from './byUri'
+import byUri, { selectors as byUriSelectors } from './byUri'
 
-export default combineReducers({byUri})
+export default combineReducers({ byUri })
 
 // SELECTORS
 const bindSelector = (selector, mountPoint) => {

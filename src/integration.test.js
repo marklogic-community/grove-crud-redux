@@ -23,27 +23,27 @@ describe('documents', () => {
     expect(selectors.jsonByUri(store.getState(), noDocUri)).toBeUndefined()
   })
 
-  it('fetches a doc successfully', (done) => {
-    const doc = {hello: 'world'}
+  it('fetches a doc successfully', done => {
+    const doc = { hello: 'world' }
     nock('http://localhost')
       .get(/documents/)
-      .query({uri: docUri})
+      .query({ uri: docUri })
       .reply(200, {
         content: doc
       })
-    expect(
-      selectors.isDocumentFetchPending(store.getState(), docUri)
-    ).toBe(false)
+    expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+      false
+    )
     const unsubscribe = store.subscribe(() => {
-      expect(
-        selectors.isDocumentFetchPending(store.getState(), docUri)
-      ).toBe(true)
+      expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+        true
+      )
       unsubscribe()
     })
     store.dispatch(actions.fetchDoc(docUri)).then(() => {
-      expect(
-        selectors.isDocumentFetchPending(store.getState(), docUri)
-      ).toBe(false)
+      expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+        false
+      )
       expect(selectors.documentByUri(store.getState(), docUri)).toEqual(doc)
       expect(selectors.jsonByUri(store.getState(), docUri)).toEqual(doc)
       expect(selectors.contentTypeByUri(store.getState(), docUri)).toEqual(
@@ -53,62 +53,39 @@ describe('documents', () => {
     })
   })
 
-  it('handles failure when fetching a document', (done) => {
+  it('handles failure when fetching a document', done => {
     const failedDocUri = '/failed-doc.json'
-    nock('http://localhost').get(/documents/).reply(500)
+    nock('http://localhost')
+      .get(/documents/)
+      .reply(500)
     store.dispatch(actions.fetchDoc(failedDocUri)).then(() => {
       expect(
         selectors.isDocumentFetchPending(store.getState(), failedDocUri)
       ).toBe(false)
       // TODO: should 'documentByUri' return everything and contentByUri be
       // the content selector?
-      expect(selectors.documentByUri(
-        store.getState(),
-        failedDocUri
-      )).toEqual(undefined)
-      expect(selectors.errorByUri(
-        store.getState(),
-        failedDocUri
-      )).toContain('Error')
+      expect(selectors.documentByUri(store.getState(), failedDocUri)).toEqual(
+        undefined
+      )
+      expect(selectors.errorByUri(store.getState(), failedDocUri)).toContain(
+        'Error'
+      )
       done()
     })
   })
 
-  it('returns json when XML document is fetched', (done) => {
+  it('returns json when XML document is fetched', done => {
     const xml = '<PersonGivenName>Jill</PersonGivenName>'
-    nock('http://localhost').get(/documents/).query({uri: docUri})
-      .reply(200, xml, {'Content-Type': 'application/xml'})
+    nock('http://localhost')
+      .get(/documents/)
+      .query({ uri: docUri })
+      .reply(200, xml, { 'Content-Type': 'application/xml' })
     store.dispatch(actions.fetchDoc(docUri)).then(() => {
       expect(selectors.documentByUri(store.getState(), docUri)).toEqual(xml)
       expect(selectors.jsonByUri(store.getState(), docUri)).toEqual({
-        'PersonGivenName': 'Jill'
+        PersonGivenName: 'Jill'
       })
       done()
     })
   })
-//   it('fetches a document that is not in state', () => {
-//     const doc = {hello: 'world'}
-//     nock('http://localhost')
-//       .get(/documents/)
-//       .query({uri: '/fetched-doc.json'})
-//       .reply(200, {
-//         content: doc
-//       })
-//     store.dispatch(
-//       actions.fetchDocIfNeeded(
-//         '/fetched-doc.json',
-//         // We pass this second argument in so the action does not have to
-//         // inspect state which in the current thunk implementation can lead
-//         // to it having too much information about where it is mounted
-//         selectors.documentByUri(
-//           store.getState(),
-//           '/fetched-doc.json'
-//         )
-//       )
-//     )
-//     expect(selectors.documentByUri(
-//       store.getState(),
-//       '/fetched-doc.json'
-//     )).toBe(doc)
-//   })
 })
