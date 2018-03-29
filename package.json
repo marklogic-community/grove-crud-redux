@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "ml-rest.js": "^1.0.0-2",
     "x2js": "^3.1.1"
   },
   "peerDependencies": {
