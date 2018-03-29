@@ -1450,7 +1450,8 @@ var documentReducer = function documentReducer() {
       return _extends({}, state, {
         content: action.payload.response.content,
         contentType: action.payload.response.contentType,
-        pending: false
+        pending: false,
+        error: undefined
       });
     case types.FETCH_DOC_FAILURE:
       return _extends({}, state, {
@@ -2295,7 +2296,7 @@ var defaultAPI = {
 var fetchDoc = exports.fetchDoc = function fetchDoc(docUri) {
   var extraArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  var API = extraArgs.docAPI || defaultAPI;
+  var API = extraArgs.api || defaultAPI;
   return function (dispatch) {
     dispatch({
       type: types.FETCH_DOC_REQUESTED,

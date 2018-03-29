@@ -8,6 +8,12 @@ This is a Redux implementation for interaction with MarkLogic documents in the b
 
 ## Use
 
+### Actions
+
+#### Override default backend API service wrapper
+
+### Selectors
+
 The provided selectors only know about their slice of state, so your consuming code needs to wrap them to provide their particular slice of state. For example:
 
 ```javascript
