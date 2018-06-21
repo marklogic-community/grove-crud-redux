@@ -5,7 +5,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'ml-documents-redux',
+    library: 'muir-crud-redux',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },

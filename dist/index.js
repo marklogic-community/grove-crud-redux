@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("ml-documents-redux", [], factory);
+		define("muir-crud-redux", [], factory);
 	else if(typeof exports === 'object')
-		exports["ml-documents-redux"] = factory();
+		exports["muir-crud-redux"] = factory();
 	else
-		root["ml-documents-redux"] = factory();
+		root["muir-crud-redux"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -762,8 +762,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.selectors = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; // TODO: extract documents to one level up (ml-documents-redux)
-
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _redux = __webpack_require__(10);
 
@@ -2270,13 +2269,12 @@ var types = _interopRequireWildcard(_actionTypes);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 __webpack_require__(29); /* global fetch, URL */
-// TODO: extract documents to one level up (ml-documents-redux)
 
 
 var defaultAPI = {
   getDoc: function getDoc(uri) {
     var contentType = void 0;
-    return fetch(new URL('/api/documents?uri=' + uri, document.baseURI).toString(), { credentials: 'same-origin' }).then(function (response) {
+    return fetch(new URL('/api/crud/all/' + encodeURIComponent(uri), document.baseURI).toString(), { credentials: 'same-origin' }).then(function (response) {
       if (!response.ok) throw new Error(response.statusText);
       contentType = response.headers.get('content-type');
       if (contentType && contentType.indexOf('application/json') !== -1) {
@@ -2323,12 +2321,6 @@ var fetchDoc = exports.fetchDoc = function fetchDoc(docUri) {
     });
   };
 };
-
-// export const fetchDocIfNeeded = () => {
-//   return {
-//     type: ''
-//   }
-// }
 
 /***/ }),
 /* 29 */

@@ -1,5 +1,4 @@
 /* eslint-env jest */
-// TODO: extract documents to one level up (ml-documents-redux)
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import nock from 'nock'

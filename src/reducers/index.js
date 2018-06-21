@@ -1,4 +1,3 @@
-// TODO: extract documents to one level up (ml-documents-redux)
 import { combineReducers } from 'redux'
 import byUri, { selectors as byUriSelectors } from './byUri'
 

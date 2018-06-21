@@ -1,5 +1,4 @@
 /* global fetch, URL */
-// TODO: extract documents to one level up (ml-documents-redux)
 import * as types from '../actionTypes'
 
 require('isomorphic-fetch')
