@@ -26,8 +26,7 @@ describe('documents', () => {
 
   it('fetches a doc successfully', done => {
     nock('http://localhost')
-      .get(/documents/)
-      .query({ uri: docUri })
+      .get('/api/crud/all/' + encodeURIComponent(docUri))
       .reply(200, {
         content: doc
       })
@@ -56,7 +55,7 @@ describe('documents', () => {
   it('handles failure when fetching a document', done => {
     const failedDocUri = '/failed-doc.json'
     nock('http://localhost')
-      .get(/documents/)
+      .get(/crud/)
       .reply(500)
     store.dispatch(actions.fetchDoc(failedDocUri)).then(() => {
       expect(
@@ -77,16 +76,14 @@ describe('documents', () => {
   it('handles success after a failure', done => {
     const fickleDocUri = '/fickle-doc.json'
     nock('http://localhost')
-      .get(/documents/)
-      .query({ uri: fickleDocUri })
+      .get(/crud/)
       .reply(500)
     store
       .dispatch(actions.fetchDoc(fickleDocUri))
       .then(() => {
         nock.cleanAll()
         nock('http://localhost')
-          .get(/documents/)
-          .query({ uri: fickleDocUri })
+          .get(/crud/)
           .reply(200, {
             content: doc
           })
@@ -106,8 +103,7 @@ describe('documents', () => {
   it('returns json when XML document is fetched', done => {
     const xml = '<PersonGivenName>Jill</PersonGivenName>'
     nock('http://localhost')
-      .get(/documents/)
-      .query({ uri: docUri })
+      .get('/api/crud/all/' + encodeURIComponent(docUri))
       .reply(200, xml, { 'Content-Type': 'application/xml' })
     store.dispatch(actions.fetchDoc(docUri)).then(() => {
       expect(selectors.documentByUri(store.getState(), docUri)).toEqual(xml)

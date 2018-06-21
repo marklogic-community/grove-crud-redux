@@ -8,7 +8,7 @@ const defaultAPI = {
   getDoc: uri => {
     let contentType
     return fetch(
-      new URL('/api/documents?uri=' + uri, document.baseURI).toString(),
+      new URL('/api/crud/all/' + encodeURIComponent(uri), document.baseURI).toString(),
       { credentials: 'same-origin' }
     )
       .then(response => {
