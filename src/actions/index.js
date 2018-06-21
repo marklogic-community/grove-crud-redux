@@ -59,9 +59,3 @@ export const fetchDoc = (docUri, extraArgs = {}) => {
     )
   }
 }
-
-// export const fetchDocIfNeeded = () => {
-//   return {
-//     type: ''
-//   }
-// }
