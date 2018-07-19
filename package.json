@@ -1,6 +1,6 @@
 {
   "name": "muir-crud-redux",
-  "version": "0.3.1",
+  "version": "0.10.0-alpha",
   "description": "Redux module to model and retrieve MarkLogic documents",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/pmcelwee/muir-crud-redux.git",
