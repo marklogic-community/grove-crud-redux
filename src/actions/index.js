@@ -40,7 +40,7 @@ const defaultAPI = {
       });
   },
   createDoc: doc => {
-    return fetch('/api/crud/all/', {
+    return fetch(new URL('/api/crud/all/', document.baseURI).toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
