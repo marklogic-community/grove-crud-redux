@@ -32,7 +32,7 @@ export default (state = {}, action) => {
 
 // SELECTORS
 export const selectors = {
-  error: state => state.error,
-  pending: state => state.pending,
-  docUri: state => state.docUri
+  creationError: state => state.error,
+  isCreatePending: state => state.pending,
+  createdDocUri: state => state.docUri
 };
