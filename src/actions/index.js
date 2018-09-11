@@ -45,7 +45,7 @@ const defaultAPI = {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(doc),
+      body: doc,
       credentials: 'same-origin'
     })
       .then(checkStatus)
