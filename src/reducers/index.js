@@ -1,7 +1,10 @@
 import { combineReducers } from 'redux';
 import byUri, { selectors as byUriSelectors } from './byUri';
+import createUpdate, {
+  selectors as createUpdateSelectors
+} from './createUpdate';
 
-export default combineReducers({ byUri });
+export default combineReducers({ byUri, createUpdate });
 
 // SELECTORS
 const bindSelector = (selector, mountPoint) => {
@@ -18,5 +21,6 @@ const bindSelectors = (selectors, mountPoint) => {
 };
 
 export const selectors = {
-  ...bindSelectors(byUriSelectors, 'byUri')
+  ...bindSelectors(byUriSelectors, 'byUri'),
+  ...bindSelectors(createUpdateSelectors, 'createUpdate')
 };

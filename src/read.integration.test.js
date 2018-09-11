@@ -6,7 +6,7 @@ import nock from 'nock';
 import reducer, { selectors } from './';
 import * as actions from './actions';
 
-describe('documents', () => {
+describe('READ', () => {
   const docUri = '/fetched-doc.json';
   const doc = { hello: 'world' };
 
