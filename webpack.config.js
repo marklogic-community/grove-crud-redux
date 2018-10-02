@@ -6,7 +6,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'muir-crud-redux',
+    library: 'grove-crud-redux',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
