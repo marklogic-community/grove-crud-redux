@@ -4,7 +4,7 @@ This is a Redux implementation for interaction with MarkLogic documents in the b
 
 ## Install
 
-    npm install muir-crud-redux --save
+    npm install grove-crud-redux --save
 
 ## Use
 
@@ -20,7 +20,7 @@ The provided selectors only know about their slice of state, so your consuming c
 import {
   actions as documentActions,
   selectors as documentSelectors
-} from 'muir-crud-redux';
+} from 'grove-crud-redux';
 
 const bindSelector = (selector, mountPoint) => {
   return (state, ...args) => {
