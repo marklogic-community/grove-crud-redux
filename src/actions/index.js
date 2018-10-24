@@ -14,11 +14,11 @@ const checkStatus = response => {
 };
 
 const defaultAPI = {
-  getDoc: uri => {
+  getDoc: id => {
     let contentType;
     return fetch(
       new URL(
-        '/api/crud/all/' + encodeURIComponent(uri),
+        '/api/crud/all/' + encodeURIComponent(id),
         document.baseURI
       ).toString(),
       { credentials: 'same-origin' }
@@ -51,27 +51,27 @@ const defaultAPI = {
       .then(checkStatus)
       .then(response => {
         return {
-          docUri: decodeURIComponent(response.headers.get('location'))
+          docId: decodeURIComponent(response.headers.get('location'))
         };
       });
   }
 };
 
-export const fetchDoc = (docUri, extraArgs = {}) => {
+export const fetchDoc = (docId, extraArgs = {}) => {
   const API = extraArgs.api || defaultAPI;
   return dispatch => {
     dispatch({
       type: types.FETCH_DOC_REQUESTED,
-      payload: { docUri }
+      payload: { docId }
     });
 
-    return API.getDoc(docUri).then(
+    return API.getDoc(docId).then(
       response =>
         dispatch({
           type: types.FETCH_DOC_SUCCESS,
           payload: {
             response,
-            docUri
+            docId
           }
         }),
       error => {
@@ -79,7 +79,7 @@ export const fetchDoc = (docUri, extraArgs = {}) => {
           type: types.FETCH_DOC_FAILURE,
           payload: {
             error: 'Error fetching document: ' + error.message,
-            docUri
+            docId
           }
         });
       }

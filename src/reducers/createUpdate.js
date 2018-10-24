@@ -12,7 +12,7 @@ export default (state = {}, action) => {
         return {
           ...state,
           content: action.payload.doc,
-          docUri: action.payload.response.docUri,
+          docId: action.payload.response.docId,
           pending: false,
           error: undefined
         };
@@ -34,5 +34,5 @@ export default (state = {}, action) => {
 export const selectors = {
   creationError: state => state.error,
   isCreatePending: state => state.pending,
-  createdDocUri: state => state.docUri
+  createdDocId: state => state.docId
 };

@@ -18,7 +18,7 @@ describe('CREATE', () => {
     const state = store.getState();
     expect(selectors.isCreatePending(state)).toBeFalsy(); // toBe(false) slightly better
     expect(selectors.creationError(state)).toBe(undefined);
-    expect(selectors.createdDocUri(state)).toBe(undefined);
+    expect(selectors.createdDocId(state)).toBe(undefined);
   });
 
   it('creates an entity successfully', done => {
@@ -33,7 +33,7 @@ describe('CREATE', () => {
       try {
         expect(selectors.isCreatePending(store.getState())).toBeFalsy(); // toBe(false) slightly better
         expect(selectors.creationError(store.getState())).toBe(undefined);
-        expect(selectors.createdDocUri(store.getState())).toBe(
+        expect(selectors.createdDocId(store.getState())).toBe(
           '/all/some-unique-id.json'
         );
       } catch (error) {

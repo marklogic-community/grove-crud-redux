@@ -30,11 +30,11 @@ const documentReducer = (state = {}, action) => {
 };
 
 export default (state = {}, action) => {
-  if (action.payload && action.payload.docUri) {
+  if (action.payload && action.payload.docId) {
     return {
       ...state,
-      [action.payload.docUri]: documentReducer(
-        state[action.payload.docUri],
+      [action.payload.docId]: documentReducer(
+        state[action.payload.docId],
         action
       )
     };
@@ -48,25 +48,24 @@ const xmlToJson = xml => {
   return x2js.xml2js(xml);
 };
 
-const getDocumentByUri = (state, uri) => state[uri] && state[uri].content;
-const getContentTypeByUri = (state, uri) =>
-  state[uri] && state[uri].contentType;
+const getDocumentById = (state, id) => state[id] && state[id].content;
+const getContentTypeById = (state, id) => state[id] && state[id].contentType;
 
 export const selectors = {
-  isDocumentFetchPending: (state, docUri) =>
-    !!(state[docUri] && state[docUri].pending),
-  documentByUri: getDocumentByUri,
-  jsonByUri: (state, uri) => {
-    const content = getDocumentByUri(state, uri);
+  isDocumentFetchPending: (state, docId) =>
+    !!(state[docId] && state[docId].pending),
+  documentById: getDocumentById,
+  jsonById: (state, id) => {
+    const content = getDocumentById(state, id);
     if (!content) {
       return;
     }
-    if (getContentTypeByUri(state, uri).indexOf('application/xml') !== -1) {
+    if (getContentTypeById(state, id).indexOf('application/xml') !== -1) {
       return xmlToJson(content);
     } else {
       return content;
     }
   },
-  contentTypeByUri: getContentTypeByUri,
-  errorByUri: (state, uri) => state[uri] && state[uri].error
+  contentTypeById: getContentTypeById,
+  errorById: (state, id) => state[id] && state[id].error
 };

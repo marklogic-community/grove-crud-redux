@@ -7,7 +7,7 @@ import reducer, { selectors } from './';
 import * as actions from './actions';
 
 describe('READ', () => {
-  const docUri = '/fetched-doc.json';
+  const docId = '/fetched-doc.json';
   const doc = { hello: 'world' };
 
   afterEach(nock.cleanAll);
@@ -18,33 +18,33 @@ describe('READ', () => {
   });
 
   it('returns undefined for nonexistent document', () => {
-    const noDocUri = '/no-such-doc.json';
-    expect(selectors.documentByUri(store.getState(), noDocUri)).toBeUndefined();
-    expect(selectors.jsonByUri(store.getState(), noDocUri)).toBeUndefined();
+    const noDocId = '/no-such-doc.json';
+    expect(selectors.documentById(store.getState(), noDocId)).toBeUndefined();
+    expect(selectors.jsonById(store.getState(), noDocId)).toBeUndefined();
   });
 
   it('fetches a doc successfully', done => {
     nock('http://localhost')
-      .get('/api/crud/all/' + encodeURIComponent(docUri))
+      .get('/api/crud/all/' + encodeURIComponent(docId))
       .reply(200, {
         content: doc
       });
-    expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+    expect(selectors.isDocumentFetchPending(store.getState(), docId)).toBe(
       false
     );
     const unsubscribe = store.subscribe(() => {
-      expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+      expect(selectors.isDocumentFetchPending(store.getState(), docId)).toBe(
         true
       );
       unsubscribe();
     });
-    store.dispatch(actions.fetchDoc(docUri)).then(() => {
-      expect(selectors.isDocumentFetchPending(store.getState(), docUri)).toBe(
+    store.dispatch(actions.fetchDoc(docId)).then(() => {
+      expect(selectors.isDocumentFetchPending(store.getState(), docId)).toBe(
         false
       );
-      expect(selectors.documentByUri(store.getState(), docUri)).toEqual(doc);
-      expect(selectors.jsonByUri(store.getState(), docUri)).toEqual(doc);
-      expect(selectors.contentTypeByUri(store.getState(), docUri)).toEqual(
+      expect(selectors.documentById(store.getState(), docId)).toEqual(doc);
+      expect(selectors.jsonById(store.getState(), docId)).toEqual(doc);
+      expect(selectors.contentTypeById(store.getState(), docId)).toEqual(
         'application/json'
       );
       done();
@@ -52,20 +52,20 @@ describe('READ', () => {
   });
 
   it('handles failure when fetching a document', done => {
-    const failedDocUri = '/failed-doc.json';
+    const failedDocId = '/failed-doc.json';
     nock('http://localhost')
       .get(/crud/)
       .reply(500);
-    store.dispatch(actions.fetchDoc(failedDocUri)).then(() => {
+    store.dispatch(actions.fetchDoc(failedDocId)).then(() => {
       expect(
-        selectors.isDocumentFetchPending(store.getState(), failedDocUri)
+        selectors.isDocumentFetchPending(store.getState(), failedDocId)
       ).toBe(false);
-      // TODO: should 'documentByUri' return everything and contentByUri be
+      // TODO: should 'documentById' return everything and contentById be
       // the content selector?
       expect(
-        selectors.documentByUri(store.getState(), failedDocUri)
+        selectors.documentById(store.getState(), failedDocId)
       ).toBeUndefined();
-      expect(selectors.errorByUri(store.getState(), failedDocUri)).toContain(
+      expect(selectors.errorById(store.getState(), failedDocId)).toContain(
         'Error'
       );
       done();
@@ -73,12 +73,12 @@ describe('READ', () => {
   });
 
   it('handles success after a failure', done => {
-    const fickleDocUri = '/fickle-doc.json';
+    const fickleDocId = '/fickle-doc.json';
     nock('http://localhost')
       .get(/crud/)
       .reply(500);
     store
-      .dispatch(actions.fetchDoc(fickleDocUri))
+      .dispatch(actions.fetchDoc(fickleDocId))
       .then(() => {
         nock.cleanAll();
         nock('http://localhost')
@@ -86,14 +86,14 @@ describe('READ', () => {
           .reply(200, {
             content: doc
           });
-        return store.dispatch(actions.fetchDoc(fickleDocUri));
+        return store.dispatch(actions.fetchDoc(fickleDocId));
       })
       .then(() => {
-        expect(selectors.documentByUri(store.getState(), fickleDocUri)).toEqual(
+        expect(selectors.documentById(store.getState(), fickleDocId)).toEqual(
           doc
         );
         expect(
-          selectors.errorByUri(store.getState(), fickleDocUri)
+          selectors.errorById(store.getState(), fickleDocId)
         ).toBeUndefined();
         done();
       });
@@ -102,11 +102,11 @@ describe('READ', () => {
   it('returns json when XML document is fetched', done => {
     const xml = '<PersonGivenName>Jill</PersonGivenName>';
     nock('http://localhost')
-      .get('/api/crud/all/' + encodeURIComponent(docUri))
+      .get('/api/crud/all/' + encodeURIComponent(docId))
       .reply(200, xml, { 'Content-Type': 'application/xml' });
-    store.dispatch(actions.fetchDoc(docUri)).then(() => {
-      expect(selectors.documentByUri(store.getState(), docUri)).toEqual(xml);
-      expect(selectors.jsonByUri(store.getState(), docUri)).toEqual({
+    store.dispatch(actions.fetchDoc(docId)).then(() => {
+      expect(selectors.documentById(store.getState(), docId)).toEqual(xml);
+      expect(selectors.jsonById(store.getState(), docId)).toEqual({
         PersonGivenName: 'Jill'
       });
       done();
