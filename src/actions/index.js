@@ -51,7 +51,7 @@ const defaultAPI = {
       .then(checkStatus)
       .then(response => {
         return {
-          docId: decodeURIComponent(response.headers.get('location'))
+          docId: response.headers.get('location')
         };
       });
   }

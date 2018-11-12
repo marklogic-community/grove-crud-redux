@@ -24,7 +24,7 @@ describe('CREATE', () => {
   it('creates an entity successfully', done => {
     nock('http://localhost')
       .post(/crud/)
-      .reply(201, null, { location: '/all/some-unique-id.json' });
+      .reply(201, null, { location: '%2Fall%2Fsome-unique-id.json' });
     const unsubscribe = store.subscribe(() => {
       expect(selectors.isCreatePending(store.getState())).toBe(true);
       unsubscribe();
@@ -34,7 +34,7 @@ describe('CREATE', () => {
         expect(selectors.isCreatePending(store.getState())).toBeFalsy(); // toBe(false) slightly better
         expect(selectors.creationError(store.getState())).toBe(undefined);
         expect(selectors.createdDocId(store.getState())).toBe(
-          '/all/some-unique-id.json'
+          '%2Fall%2Fsome-unique-id.json'
         );
       } catch (error) {
         done.fail(error);

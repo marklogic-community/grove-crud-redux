@@ -7,7 +7,7 @@ import reducer, { selectors } from './';
 import * as actions from './actions';
 
 describe('READ', () => {
-  const docId = '/fetched-doc.json';
+  const docId = '%2Ffetched-doc.json';
   const doc = { hello: 'world' };
 
   afterEach(nock.cleanAll);
@@ -18,14 +18,14 @@ describe('READ', () => {
   });
 
   it('returns undefined for nonexistent document', () => {
-    const noDocId = '/no-such-doc.json';
+    const noDocId = '%2Fno-such-doc.json';
     expect(selectors.documentById(store.getState(), noDocId)).toBeUndefined();
     expect(selectors.jsonById(store.getState(), noDocId)).toBeUndefined();
   });
 
   it('fetches a doc successfully', done => {
     nock('http://localhost')
-      .get('/api/crud/all/' + encodeURIComponent(docId))
+      .get('/api/crud/all/' + docId)
       .reply(200, {
         content: doc
       });
@@ -52,7 +52,7 @@ describe('READ', () => {
   });
 
   it('handles failure when fetching a document', done => {
-    const failedDocId = '/failed-doc.json';
+    const failedDocId = '%2Ffailed-doc.json';
     nock('http://localhost')
       .get(/crud/)
       .reply(500);
@@ -73,7 +73,7 @@ describe('READ', () => {
   });
 
   it('handles success after a failure', done => {
-    const fickleDocId = '/fickle-doc.json';
+    const fickleDocId = '%2Ffickle-doc.json';
     nock('http://localhost')
       .get(/crud/)
       .reply(500);
