@@ -7,6 +7,7 @@ import reducer, { selectors } from './';
 import * as actions from './actions';
 
 describe('READ', () => {
+  const escapedDocId = '%252Ffetched-doc.json';
   const docId = '%2Ffetched-doc.json';
   const doc = { hello: 'world' };
 
@@ -25,7 +26,7 @@ describe('READ', () => {
 
   it('fetches a doc successfully', done => {
     nock('http://localhost')
-      .get('/api/crud/all/' + docId)
+      .get('/api/crud/all/' + escapedDocId)
       .reply(200, {
         content: doc
       });
@@ -42,6 +43,7 @@ describe('READ', () => {
       expect(selectors.isDocumentFetchPending(store.getState(), docId)).toBe(
         false
       );
+      console.log('store.getState():', store.getState()); // eslint-disable-line
       expect(selectors.documentById(store.getState(), docId)).toEqual(doc);
       expect(selectors.jsonById(store.getState(), docId)).toEqual(doc);
       expect(selectors.contentTypeById(store.getState(), docId)).toEqual(
@@ -102,7 +104,7 @@ describe('READ', () => {
   it('returns json when XML document is fetched', done => {
     const xml = '<PersonGivenName>Jill</PersonGivenName>';
     nock('http://localhost')
-      .get('/api/crud/all/' + encodeURIComponent(docId))
+      .get('/api/crud/all/' + escapedDocId)
       .reply(200, xml, { 'Content-Type': 'application/xml' });
     store.dispatch(actions.fetchDoc(docId)).then(() => {
       expect(selectors.documentById(store.getState(), docId)).toEqual(xml);
