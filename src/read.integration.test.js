@@ -43,7 +43,6 @@ describe('READ', () => {
       expect(selectors.isDocumentFetchPending(store.getState(), docId)).toBe(
         false
       );
-      console.log('store.getState():', store.getState()); // eslint-disable-line
       expect(selectors.documentById(store.getState(), docId)).toEqual(doc);
       expect(selectors.jsonById(store.getState(), docId)).toEqual(doc);
       expect(selectors.contentTypeById(store.getState(), docId)).toEqual(
