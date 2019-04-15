@@ -1,10 +1,10 @@
 # MarkLogic Document Management using Redux
 
-This is a Redux implementation for interaction with MarkLogic documents in the browser. It forms part of the MarkLogic Sawyer (formerly "Treehouse") project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/ml-treehouse/browse) for an example of using this library in practice.
+This is a Redux implementation for interaction with MarkLogic documents in the browser. It forms part of the MarkLogic Grove project. See the [reference application](https://github.com/marklogic-community/grove-react-template) for an example of using this library in practice.
 
 ## Install
 
-    npm install grove-crud-redux --save
+    npm install @marklogic-community/grove-crud-redux --save
 
 ## Use
 
